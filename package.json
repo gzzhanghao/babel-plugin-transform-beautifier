@@ -1,0 +1,16 @@
+{
+  "name": "babel-plugin-transform-beautifier",
+  "version": "0.1.0",
+  "description": "A babel plugin that beautifies javascripts",
+  "main": "index.js",
+  "author": "Jason <jason.daurus@gmail.com>",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/gzzhanghao/babel-plugin-transform-beautifier.git"
+  },
+  "bugs": {
+    "url": "https://github.com/gzzhanghao/babel-plugin-transform-beautifier/issues"
+  },
+  "homepage": "https://github.com/gzzhanghao/babel-plugin-transform-beautifier#readme"
+}
