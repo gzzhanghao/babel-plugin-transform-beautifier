@@ -15,3 +15,21 @@ Then add the plugin to your babel config:
   plugins: ['transform-beautifier'],
 }
 ```
+
+## Example
+
+The following code:
+
+```javascript
+testA ? consequent() : testB && alternate()
+```
+
+Will be transformed to:
+
+```javascript
+if (testA) {
+  consequent()
+} else if (testB) {
+  alternate()
+}
+```
