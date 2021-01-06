@@ -1,0 +1,163 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`beautifier conditional 1`] = `
+"if (a) {
+  b;
+} else {
+  c;
+}"
+`;
+
+exports[`beautifier conditional assign 1`] = `
+"if (b) {
+  a = c;
+} else {
+  a = d;
+}"
+`;
+
+exports[`beautifier conditional deep 1`] = `"a(b ? c : d);"`;
+
+exports[`beautifier conditional return 1`] = `
+"() => {
+  if (a) {
+    return b;
+  } else {
+    return c;
+  }
+};"
+`;
+
+exports[`beautifier declaration 1`] = `
+"var a;
+var b = 1;"
+`;
+
+exports[`beautifier declaration empty 1`] = `"var a, b, c;"`;
+
+exports[`beautifier declaration full 1`] = `
+"var a = 1;
+var b = 2;
+var c = 3;"
+`;
+
+exports[`beautifier declaration in for 1`] = `
+"var a = 1;
+
+for (var b = 2;;) {
+  ;
+}"
+`;
+
+exports[`beautifier for block 1`] = `"for (;;) {}"`;
+
+exports[`beautifier for stmt 1`] = `
+"for (;;) {
+  ;
+}"
+`;
+
+exports[`beautifier if block 1`] = `"if (x) {}"`;
+
+exports[`beautifier if else block 1`] = `"if (x) {} else {}"`;
+
+exports[`beautifier if else conditional 1`] = `
+"if (x) {
+  ;
+} else if (a) {
+  b;
+} else {
+  c;
+}"
+`;
+
+exports[`beautifier if else conditional assign 1`] = `
+"if (x) {
+  ;
+} else if (b) {
+  a = c;
+} else {
+  a = d;
+}"
+`;
+
+exports[`beautifier if else logical 1`] = `
+"if (x) {
+  ;
+} else if (a) {
+  b;
+}"
+`;
+
+exports[`beautifier logical and 1`] = `
+"if (a) {
+  b;
+}"
+`;
+
+exports[`beautifier logical deep 1`] = `
+"if (a && b) {
+  ;
+}"
+`;
+
+exports[`beautifier logical or 1`] = `
+"if (!a) {
+  b;
+}"
+`;
+
+exports[`beautifier object arrow 1`] = `
+"({
+  a: () => {}
+});"
+`;
+
+exports[`beautifier object method 1`] = `
+"({
+  a() {}
+
+});"
+`;
+
+exports[`beautifier object value 1`] = `
+"({
+  a: 123
+});"
+`;
+
+exports[`beautifier seq 1`] = `
+"a;
+b;
+c;"
+`;
+
+exports[`beautifier seq deep 1`] = `"a((b, c, d));"`;
+
+exports[`beautifier seq return 1`] = `
+"() => {
+  a;
+  b;
+  return c;
+};"
+`;
+
+exports[`beautifier unary false 1`] = `"false;"`;
+
+exports[`beautifier unary true 1`] = `"true;"`;
+
+exports[`beautifier unary undefined 1`] = `"undefined;"`;
+
+exports[`beautifier unary void 1`] = `
+"x();
+undefined;"
+`;
+
+exports[`beautifier unary void deep 1`] = `"a(void b());"`;
+
+exports[`beautifier unary void return 1`] = `
+"() => {
+  x();
+  return;
+};"
+`;
