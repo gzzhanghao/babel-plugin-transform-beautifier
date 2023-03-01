@@ -140,6 +140,10 @@ exports[`beautifier seq return 1`] = `
 };"
 `;
 
+exports[`beautifier template literal 1`] = `"\`a\${b}\${c}\`;"`;
+
+exports[`beautifier template literal with tail 1`] = `"\`a\${b}c\`;"`;
+
 exports[`beautifier unary false 1`] = `"false;"`;
 
 exports[`beautifier unary true 1`] = `"true;"`;
