@@ -43,7 +43,6 @@ var c = 3;"
 
 exports[`beautifier declaration in for 1`] = `
 "var a = 1;
-
 for (var b = 2;;) {
   ;
 }"
@@ -116,7 +115,6 @@ exports[`beautifier object arrow 1`] = `
 exports[`beautifier object method 1`] = `
 "({
   a() {}
-
 });"
 `;
 
