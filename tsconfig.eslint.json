@@ -4,6 +4,7 @@
     ".eslintrc.js",
     "babel.config.js",
     "src/**/*",
+    "pages/**/*",
     "__tests__/**/*"
   ]
 }

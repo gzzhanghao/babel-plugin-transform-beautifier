@@ -6,8 +6,5 @@
     "module": "CommonJS",
     "moduleResolution": "node",
     "lib": ["ES2015"]
-  },
-  "include": [
-    "src/**/*"
-  ]
+  }
 }
