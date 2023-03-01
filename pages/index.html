@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Example for babel-plugin-transform-beautifier</title>
+  <style>
+    html,
+    body {
+      margin: 0;
+      height: 100%;
+    }
+    body {
+      display: flex;
+    }
+    .text {
+      flex: 1;
+      width: 1px;
+      resize: none;
+      border: 0;
+      outline: none;
+      white-space: pre;
+      padding: 10px;
+    }
+    .text:not(:last-child) {
+      border-right: 1px solid #333;
+    }
+  </style>
+</head>
+<body>
+  <textarea id="input" class="text" placeholder="Minified code"></textarea>
+  <textarea id="output" class="text"></textarea>
+  <script src="https://unpkg.com/@babel/standalone@7.21.2/babel.min.js"></script>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>
