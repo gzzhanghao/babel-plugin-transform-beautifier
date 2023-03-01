@@ -232,7 +232,7 @@ export default (babel: any) => {
       ObjectProperty(path: NodePath<types.ObjectProperty>) {
         const { key, value, computed } = path.node;
 
-        if (value.type === 'FunctionExpression') {
+        if (value.type === 'FunctionExpression' && key.type !== 'PrivateName') {
           path.replaceWith(t.objectMethod('method', key, value.params, value.body, computed));
         }
       },
