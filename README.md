@@ -2,7 +2,7 @@
 
 A babel plugin that beautifies JavaScript
 
-- [Try it online](https://gzzhanghao.github.io/babel-plugin-transform-beautifier/)
+- [Try it Online](https://gzzhanghao.github.io/babel-plugin-transform-beautifier/)
 
 ## Usage
 
