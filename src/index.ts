@@ -302,6 +302,73 @@ export default (babel: any) => {
         }
         path.set('alternate', t.blockStatement([alternate]));
       },
+
+      CallExpression: {
+        exit(path: NodePath<types.CallExpression>) {
+          const { callee } = path.node;
+          if (callee.type !== 'MemberExpression') {
+            return;
+          }
+          if (callee.property.type !== 'Identifier') {
+            return;
+          }
+          if (callee.property.name !== 'concat') {
+            return;
+          }
+          if (path.node.arguments.length !== 1) {
+            return;
+          }
+          const [arg] = path.node.arguments;
+          if (!t.isExpression(arg)) {
+            return;
+          }
+          /**
+           *   'string'.concat(str)
+           * =>
+           *   `string${str}`
+           */
+          if (callee.object.type === 'StringLiteral') {
+            const { value } = callee.object;
+            path.replaceWith(
+              t.templateLiteral([
+                t.templateElement({ raw: value, cooked: value }),
+                t.templateElement({ raw: '', cooked: '' }, true),
+              ], [
+                arg,
+              ]),
+            );
+            return;
+          }
+          if (callee.object.type !== 'TemplateLiteral') {
+            return;
+          }
+          const lastQuasis = callee.object.quasis[callee.object.quasis.length - 1];
+          if (arg.type === 'StringLiteral') {
+            /**
+             *   `template ${literal}`.concat(' tail')
+             * =>
+             *   `template ${literal} tail`
+             */
+            lastQuasis.value.raw += arg.value;
+            if (lastQuasis.value.cooked) {
+              lastQuasis.value.raw += arg.value;
+            }
+            path.replaceWith(callee.object);
+          } else {
+            /**
+             *   `template ${literal}`.concat(value)
+             * =>
+             *   `template ${literal}${value}`
+             */
+            lastQuasis.tail = false;
+            callee.object.quasis.push(
+              t.templateElement({ raw: '', cooked: '' }, true),
+            );
+            callee.object.expressions.push(arg);
+          }
+          path.replaceWith(callee.object);
+        },
+      },
     },
   };
 };

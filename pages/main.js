@@ -5,7 +5,7 @@
 import prettier from 'https://unpkg.com/prettier@2.8.4/esm/standalone.mjs';
 import parserBabel from 'https://unpkg.com/prettier@2.8.4/esm/parser-babel.mjs';
 
-import beautifierPlugin from './plugin.mjs';
+import beautifierPlugin from '../dist/esm/index.mjs';
 
 const input = document.getElementById('input');
 const output = document.getElementById('output');
@@ -21,6 +21,7 @@ input.addEventListener('input', () => {
     const prettierRes = prettier.format(babelRes.code, {
       parser: 'babel',
       plugins: [parserBabel],
+      singleQuote: true,
     });
 
     output.value = prettierRes;

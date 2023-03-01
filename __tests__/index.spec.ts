@@ -56,4 +56,7 @@ describe('beautifier', () => {
   t('if else logical', 'if (x); else a && b');
   t('if else conditional', 'if (x); else a ? b : c');
   t('if else conditional assign', 'if (x); else a = b ? c : d');
+
+  t('template literal', '"a".concat(b).concat(c)');
+  t('template literal with tail', '"a".concat(b).concat("c")');
 });
