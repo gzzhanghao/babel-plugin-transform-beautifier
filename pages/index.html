@@ -26,6 +26,19 @@
     .text:not(:last-child) {
       border-right: 1px solid #333;
     }
+    @media screen and (max-width: 620px) {
+      body {
+        flex-direction: column;
+      }
+      .text {
+        width: auto;
+        height: 1px;
+        border-right: 0;
+      }
+      .text:not(:last-child) {
+        border-bottom: 1px solid #333;
+      }
+    }
   </style>
 </head>
 <body>

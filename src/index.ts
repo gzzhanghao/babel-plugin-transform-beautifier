@@ -328,6 +328,12 @@ export default (babel: any) => {
            *   `string${str}`
            */
           if (callee.object.type === 'StringLiteral') {
+            if (arg.type === 'StringLiteral') {
+              path.replaceWith(
+                t.stringLiteral(callee.object.value + arg.value),
+              );
+              return;
+            }
             const { value } = callee.object;
             path.replaceWith(
               t.templateLiteral([

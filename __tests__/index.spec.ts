@@ -59,4 +59,5 @@ describe('beautifier', () => {
 
   t('template literal', '"a".concat(b).concat(c)');
   t('template literal with tail', '"a".concat(b).concat("c")');
+  t('template literal with string', '"a".concat("b").concat("c")');
 });
