@@ -25,9 +25,10 @@
       outline: none;
       border-radius: 0;
       white-space: pre-wrap;
-    }
-    .text:first-child {
       border-right: 1px solid #333;
+    }
+    .text:last-child {
+      border-right: 0;
     }
     @media screen and (max-width: 620px) {
       body {
@@ -36,10 +37,10 @@
       .text {
         width: auto;
         height: 1px;
-      }
-      .text:first-child {
-        border-right: 0;
         border-bottom: 1px solid #333;
+      }
+      .text:last-child {
+        border-bottom: 0;
       }
     }
   </style>
