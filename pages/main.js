@@ -1,21 +1,22 @@
 /* global Babel */
 
-import parserBabel from 'https://unpkg.com/prettier@2.8.4/esm/parser-babel.mjs';
-import prettier from 'https://unpkg.com/prettier@2.8.4/esm/standalone.mjs';
+import * as prettierPluginBabel from 'https://unpkg.com/prettier@3.5.1/plugins/babel.mjs';
+import * as prettierPluginEstree from 'https://unpkg.com/prettier@3.5.1/plugins/estree.mjs';
+import * as prettier from 'https://unpkg.com/prettier@3.5.1/standalone.mjs';
 
-import beautifierPlugin from './plugin.mjs';
+import beautifierPlugin from './plugin.js';
 
 const inputEl = document.getElementById('input');
 const outputEl = document.getElementById('output');
 
-function formatInput() {
+async function formatInput() {
   const babelRes = Babel.transform(inputEl.value, {
     plugins: [beautifierPlugin],
   });
 
-  outputEl.value = prettier.format(babelRes.code, {
+  outputEl.value = await prettier.format(babelRes.code, {
     parser: 'babel',
-    plugins: [parserBabel],
+    plugins: [prettierPluginBabel, prettierPluginEstree],
     singleQuote: true,
   });
 }

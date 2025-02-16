@@ -3,4 +3,4 @@ dist
 .DS_Store
 *.log
 coverage
-pages/plugin.mjs
+pages/plugin.js
