@@ -11,8 +11,9 @@ function t(name: string, input: string) {
   it(name, () => {
     const res = babel.transformSync(format(input), {
       filename: `${name}.js`,
-      sourceType: 'script',
+      sourceType: 'unambiguous',
       plugins: [beautifier],
+      configFile: false,
     });
     expect(res.code).toMatchSnapshot();
   });
@@ -47,17 +48,21 @@ describe('beautifier', () => {
   t('unary void return', '() => { return void x() }');
   t('unary void deep', 'a(void b())');
 
-  t('object method', '({ a: function() {} })');
-  t('object arrow', '({ a: () => {} })');
-  t('object value', '({ a: 123 })');
-
   t('if block', 'if (x) {}');
   t('if else block', 'if (x) {} else {}');
   t('if else logical', 'if (x); else a && b');
   t('if else conditional', 'if (x); else a ? b : c');
   t('if else conditional assign', 'if (x); else a = b ? c : d');
+  t('if else conditional assign complex', 'if (x); else a().v = b ? c : d');
 
   t('template literal', '"a".concat(b).concat(c)');
   t('template literal with tail', '"a".concat(b).concat("c")');
   t('template literal with string', '"a".concat("b").concat("c")');
+
+  t('#3-1', '({ a: async function() { await 0; } })');
+  t('#3-2', 'new ({ a: function() {} }).a()');
+  t('#3-3', 'export var a, b = 1;');
+  t('#3-4', 'for (let i = 0, j; i < 3; i++);');
+  t('#3-5', 'let undefined = 1; console.log(void 0);');
+  t('#3-6', 'a().b = c() ? d() : e(); // a, c, d');
 });

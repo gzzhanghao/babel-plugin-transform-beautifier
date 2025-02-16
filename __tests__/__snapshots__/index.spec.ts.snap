@@ -1,5 +1,37 @@
 // Vitest Snapshot v1, https://vitest.dev/guide/snapshot.html
 
+exports[`beautifier > #3-1 1`] = `
+"({
+  a: async function () {
+    await 0;
+  }
+});"
+`;
+
+exports[`beautifier > #3-2 1`] = `
+"new {
+  a: function () {}
+}.a();"
+`;
+
+exports[`beautifier > #3-3 1`] = `
+"export var a;
+export var b = 1;"
+`;
+
+exports[`beautifier > #3-4 1`] = `
+"for (let i = 0, j; i < 3; i++) {
+  ;
+}"
+`;
+
+exports[`beautifier > #3-5 1`] = `
+"let undefined = 1;
+console.log(void 0);"
+`;
+
+exports[`beautifier > #3-6 1`] = `"a().b = c() ? d() : e(); // a, c, d"`;
+
 exports[`beautifier > conditional 1`] = `
 "if (a) {
   b;
@@ -80,6 +112,14 @@ exports[`beautifier > if else conditional assign 1`] = `
 }"
 `;
 
+exports[`beautifier > if else conditional assign complex 1`] = `
+"if (x) {
+  ;
+} else {
+  a().v = b ? c : d;
+}"
+`;
+
 exports[`beautifier > if else logical 1`] = `
 "if (x) {
   ;
@@ -104,24 +144,6 @@ exports[`beautifier > logical or 1`] = `
 "if (!a) {
   b;
 }"
-`;
-
-exports[`beautifier > object arrow 1`] = `
-"({
-  a: () => {}
-});"
-`;
-
-exports[`beautifier > object method 1`] = `
-"({
-  a() {}
-});"
-`;
-
-exports[`beautifier > object value 1`] = `
-"({
-  a: 123
-});"
 `;
 
 exports[`beautifier > seq 1`] = `

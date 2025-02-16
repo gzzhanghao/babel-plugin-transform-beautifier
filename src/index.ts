@@ -1,7 +1,7 @@
+import type { NodePath, PluginObj } from '@babel/core';
 import type * as types from '@babel/types';
-import type { NodePath } from '@babel/core';
 
-export default (babel: any) => {
+export default (babel): PluginObj => {
   const t: typeof types = babel.types;
   return {
     name: 'beautifier',
@@ -28,7 +28,12 @@ export default (babel: any) => {
          *   for (var b = 0; b < 10; b++);
          */
         if (path.parentPath.isForStatement() && path.key === 'init') {
-          path.parentPath.insertBefore(t.variableDeclaration(kind, declarations.slice(0, -1)));
+          if (kind !== 'var') {
+            return;
+          }
+          path.parentPath.insertBefore(
+            t.variableDeclaration(kind, declarations.slice(0, -1)),
+          );
           path.replaceWith(t.variableDeclaration(kind, declarations.slice(-1)));
           return;
         }
@@ -48,11 +53,35 @@ export default (babel: any) => {
           return;
         }
 
+        const decls = [
+          ...nonEmptyDeclarators.map((dec) =>
+            t.variableDeclaration(kind, [dec]),
+          ),
+        ];
         if (emptyDeclarators.length) {
-          path.insertBefore(t.variableDeclaration(kind, emptyDeclarators));
+          decls.unshift(t.variableDeclaration(kind, emptyDeclarators));
         }
-        path.replaceWithMultiple(
-          nonEmptyDeclarators.map((dec) => t.variableDeclaration(kind, [dec])),
+
+        /**
+         *   let a, b = 1, c = 2;
+         * =>
+         *   let a;
+         *   let b = 1;
+         *   let c = 2;
+         */
+        if (!path.parentPath.isExportDeclaration()) {
+          path.replaceWithMultiple(decls);
+          return;
+        }
+
+        /**
+         *   export let a, b = 1;
+         * =>
+         *   export let a;
+         *   export let b = 1;
+         */
+        path.parentPath.replaceWithMultiple(
+          decls.map((decl) => t.exportNamedDeclaration(decl)),
         );
       },
 
@@ -102,9 +131,16 @@ export default (babel: any) => {
         }
 
         if (operator === '&&') {
-          parentPath.replaceWith(t.ifStatement(left, t.expressionStatement(right)));
+          parentPath.replaceWith(
+            t.ifStatement(left, t.expressionStatement(right)),
+          );
         } else {
-          parentPath.replaceWith(t.ifStatement(t.unaryExpression('!', left), t.expressionStatement(right)));
+          parentPath.replaceWith(
+            t.ifStatement(
+              t.unaryExpression('!', left),
+              t.expressionStatement(right),
+            ),
+          );
         }
       },
 
@@ -136,7 +172,9 @@ export default (babel: any) => {
          *   undefined;
          */
         if (path.get('argument').isLiteral()) {
-          path.replaceWith(t.identifier('undefined'));
+          if (!path.scope.hasBinding('undefined', { noGlobals: true })) {
+            path.replaceWith(t.identifier('undefined'));
+          }
           return;
         }
 
@@ -155,7 +193,9 @@ export default (babel: any) => {
         if (parentPath.isReturnStatement()) {
           path.remove();
         } else {
-          path.replaceWith(t.identifier('undefined'));
+          if (!path.scope.hasBinding('undefined', { noGlobals: true })) {
+            path.replaceWith(t.identifier('undefined'));
+          }
         }
       },
 
@@ -172,13 +212,23 @@ export default (babel: any) => {
          *     val = b;
          *   }
          */
-        if (parentPath.isAssignmentExpression() && parentPath.parentPath.isExpressionStatement()) {
+        if (
+          parentPath.isAssignmentExpression() &&
+          parentPath.parentPath.isExpressionStatement()
+        ) {
           const { operator, left } = parentPath.node;
+          if (left.type !== 'Identifier') {
+            return;
+          }
           parentPath.parentPath.replaceWith(
             t.ifStatement(
               test,
-              t.expressionStatement(t.assignmentExpression(operator, left, consequent)),
-              t.expressionStatement(t.assignmentExpression(operator, left, alternate)),
+              t.expressionStatement(
+                t.assignmentExpression(operator, left, consequent),
+              ),
+              t.expressionStatement(
+                t.assignmentExpression(operator, left, alternate),
+              ),
             ),
           );
           return;
@@ -225,19 +275,6 @@ export default (babel: any) => {
       },
 
       /**
-       *   { a: function a() {} };
-       * =>
-       *   { a() {} };
-       */
-      ObjectProperty(path: NodePath<types.ObjectProperty>) {
-        const { key, value, computed } = path.node;
-
-        if (value.type === 'FunctionExpression' && key.type !== 'PrivateName') {
-          path.replaceWith(t.objectMethod('method', key, value.params, value.body, computed));
-        }
-      },
-
-      /**
        *   if (...) a;
        * =>
        *   if (...) {
@@ -254,7 +291,10 @@ export default (babel: any) => {
         if (!alternate) {
           return;
         }
-        if (alternate.type === 'BlockStatement' || alternate.type === 'IfStatement') {
+        if (
+          alternate.type === 'BlockStatement' ||
+          alternate.type === 'IfStatement'
+        ) {
           return;
         }
         if (alternate.type === 'ExpressionStatement') {
@@ -296,7 +336,11 @@ export default (babel: any) => {
            *     a = d;
            *   }
            */
-          if (expr.type === 'AssignmentExpression' && expr.right.type === 'ConditionalExpression') {
+          if (
+            expr.type === 'AssignmentExpression' &&
+            expr.left.type === 'Identifier' &&
+            expr.right.type === 'ConditionalExpression'
+          ) {
             return;
           }
         }
@@ -336,19 +380,21 @@ export default (babel: any) => {
             }
             const { value } = callee.object;
             path.replaceWith(
-              t.templateLiteral([
-                t.templateElement({ raw: value, cooked: value }),
-                t.templateElement({ raw: '', cooked: '' }, true),
-              ], [
-                arg,
-              ]),
+              t.templateLiteral(
+                [
+                  t.templateElement({ raw: value, cooked: value }),
+                  t.templateElement({ raw: '', cooked: '' }, true),
+                ],
+                [arg],
+              ),
             );
             return;
           }
           if (callee.object.type !== 'TemplateLiteral') {
             return;
           }
-          const lastQuasis = callee.object.quasis[callee.object.quasis.length - 1];
+          const lastQuasis =
+            callee.object.quasis[callee.object.quasis.length - 1];
           if (arg.type === 'StringLiteral') {
             /**
              *   `template ${literal}`.concat(' tail')
